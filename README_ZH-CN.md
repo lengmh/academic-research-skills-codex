@@ -12,7 +12,7 @@ ARS-Codex 是
 本仓库将 ARS workflow 内容作为单个 Codex skill 进行内嵌分发：
 
 ```text
-skills/academic-research-suite/
+skills/
   SKILL.md
   manifest.json
   agents/openai.yaml
@@ -34,7 +34,7 @@ skills/academic-research-suite/
     shared/
 ```
 
-原始的 Claude Code ARS checkout 不会被修改。上游内容从已核对的上游发布 commit 中复制，并通过 `skills/academic-research-suite/SKILL.md` 中的 Codex router 进行适配。
+原始的 Claude Code ARS checkout 不会被修改。上游内容从已核对的上游发布 commit 中复制，并通过 `skills/SKILL.md` 中的 Codex router 进行适配。
 
 ## 与 Claude Code ARS 的关系
 
@@ -46,7 +46,7 @@ skills/academic-research-suite/
 
 ## 版本管理
 
-本 ARS-Codex 打包版本为 `3.22.2`。repo 根目录的 `VERSION` 文件、`skills/academic-research-suite/SKILL.md` 中的元数据版本，以及 `skills/academic-research-suite/manifest.json` 中的 `adapter_version` 自 `3.22.0` 起与内嵌 ARS 套件使用相同版本号；原有 `0.1.x` 记录保留原版本号。上游版本、tag 和完整 commit 记录在 `manifest.source_repositories[]` 中。
+本 ARS-Codex 打包版本为 `3.22.2`。repo 根目录的 `VERSION` 文件、`skills/SKILL.md` 中的元数据版本，以及 `skills/manifest.json` 中的 `adapter_version` 自 `3.22.0` 起与内嵌 ARS 套件使用相同版本号；原有 `0.1.x` 记录保留原版本号。上游版本、tag 和完整 commit 记录在 `manifest.source_repositories[]` 中。
 
 打包层面的变更汇总在 [`CHANGELOG.md`](CHANGELOG.md) 中。
 
@@ -72,51 +72,19 @@ Codex session 选择 `gpt-6-astra` 和 `xhigh` reasoning。安装 skill 不会�
 
 默认采用原生自适应执行：适合并行的独立工作可交给范围明确的子 agent，
 主 agent 同时继续其他工作。固定 full-runtime topology 和 hooks 仍须选用。
-参见[模型执行策略](skills/academic-research-suite/codex/model-runtime-policy.md)
-及[系统卡对齐审计](skills/academic-research-suite/codex/audits/2026-09-06-model-alignment.md)。
+参见[模型执行策略](skills/codex/model-runtime-policy.md)
+及[系统卡对齐审计](skills/codex/audits/2026-09-06-model-alignment.md)。
 
-## 安装 ARS-Codex Plugin
+## 安装或更新 Skill
 
-通过 Codex CLI 添加 GitHub marketplace 并安装 ARS-Codex：
-
-```bash
-codex plugin marketplace add Imbad0202/academic-research-skills-codex --ref main
-codex plugin add ars-codex@ars-codex
-```
-
-以后更新 plugin：
-
-```bash
-codex plugin marketplace upgrade ars-codex
-codex plugin add ars-codex@ars-codex
-```
-
-在 Codex Desktop 中，也可以从 **Plugins** 添加此 repo，然后安装
-**ARS-Codex**：
-
-```text
-Marketplace source: https://github.com/Imbad0202/academic-research-skills-codex.git
-Branch/ref: main
-Plugin: ars-codex
-```
-
-Plugin 根目录为 `plugins/ars-codex/`。其中的 `skills/` 是
-`academic-research-suite` 的实体副本而不是符号链接，确保 Windows 上的
-Codex Desktop plugin 缓存也能正确注册 bundled skill。
-
-安装后请打开新的 Codex 对话，然后调用 `$academic-research-suite`，或直接描述符合
-内置 workflow 的学术研究任务。
-
-## 直接安装或更新 Skill
-
-除了 plugin 以外，也可以从此 repo 路径直接安装 skill。使用 `--method git`
+请从此 repo 路径直接安装 skill。使用 `--method git`
 以确保公开访问和带凭据的 GitHub 访问均可正常工作：
 
 ```bash
 python3 "$HOME/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py" \
   --repo Imbad0202/academic-research-skills-codex \
   --ref main \
-  --path skills/academic-research-suite \
+  --path skills \
   --method git
 ```
 
@@ -131,7 +99,7 @@ rm -rf "$HOME/.codex/skills/academic-research-suite"
 python3 "$HOME/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py" \
   --repo Imbad0202/academic-research-skills-codex \
   --ref main \
-  --path skills/academic-research-suite \
+  --path skills \
   --method git
 ```
 
@@ -141,8 +109,8 @@ python3 "$HOME/.codex/skills/.system/skill-installer/scripts/install-skill-from-
 
 ## Codex 文档
 
-- [Codex 配置说明](skills/academic-research-suite/ars/docs/SETUP.md) 涵盖安装、`ars-*` 别名、可选工具、Material Passport 适配器，以及不支持的 Claude plugin 功能。
-- [Codex 架构说明](skills/academic-research-suite/ars/docs/ARCHITECTURE.md) 解释了 ARS pipeline 的逻辑结构及 Codex 运行时覆盖层。
+- [Codex 配置说明](skills/ars/docs/SETUP.md) 涵盖安装、`ars-*` 别名、可选工具、Material Passport 适配器，以及不支持的 Claude plugin 功能。
+- [Codex 架构说明](skills/ars/docs/ARCHITECTURE.md) 解释了 ARS pipeline 的逻辑结构及 Codex 运行时覆盖层。
 - [可选 full-runtime adapter](CODEX_FULL_RUNTIME_ADAPTER.md) 记录了默认关闭的 planner、Codex agent-team 模板和 hook pack。
 
 ## 使用方法
@@ -273,7 +241,7 @@ codex exec --ephemeral --sandbox read-only \
 维护者质量闸门：
 
 ```bash
-python3 skills/academic-research-suite/codex/scripts/ars_codex_quality_gates.py all --json
+python3 skills/codex/scripts/ars_codex_quality_gates.py all --json
 ```
 
 预期：每个报告的闸门均为 `"ok": true`。
@@ -304,7 +272,7 @@ ARS 最初是为 Claude Code 编写的。在本 Codex 打包版本中：
 - 本地读取的 PDF 在信任页面锚点之前会运行 v3.19 `pdf_read_preflight.py`。`FAIL` 与 `UNAVAILABLE` 保持区分，缺失解析器或 sidecar 绝不会被视为 `PASS`。
 - `ars-mark-read` 的每个新标记都必须带有用户声明的 `read_scope`。显式 unknown 与旧版无 scope 记录仍为 `coverage_unknown`；部分覆盖保持可见，Codex 不会推断全文阅读。
 - 修订轮次保留 v3.19 的主张强度阶梯，以及确定性的数字、引用、标记和受保护术语守恒检查，作为 advisory-first 防护。
-- 上游 v3.18 的 SessionStart 更新检查器已内嵌，但不会作为 Codex hook 安装或执行。插件用户通过 `codex plugin marketplace upgrade ars-codex` 后接 `codex plugin add ars-codex@ars-codex` 更新；直接安装的 skill 仍通过重装或拉取本仓库更新。
+- 上游 v3.18 的 SessionStart 更新检查器已内嵌，但不会作为 Codex hook 安装或执行。更新本包请重新安装 skill，或拉取本仓库最新内容。
 - 上游对"新 Claude Code 会话"的引用在本包中等同于新的 Codex 对话；Material Passport 重置语义仍然适用。
 - 如果引用、来源、统计数据或期刊政策无法验证，Codex 应将其标记为未验证，而非编造支撑依据。
 
@@ -314,11 +282,11 @@ ARS 最初是为 Claude Code 编写的。在本 Codex 打包版本中：
 
 | 上游 ARS 功能 | Codex 打包版本行为 |
 |---|---|
-| 一个可安装的 plugin | 原生 Codex plugin `ars-codex`，内含单个 `academic-research-suite` skill |
+| 一个可安装的 plugin | 以 `skills/` 下的单一根技能（`academic-research-suite`）形式分发 |
 | `/ars-*` 斜杠命令 | 通过 skill router 以 `ars-*` 别名模拟；非原生斜杠命令 |
 | 从 `skills/` 符号链接自动发现的四个上游 skill | 单个 Codex router skill 选择 workflow 并读取内嵌的 workflow `WORKFLOW.md` 文件 |
 | Plugin 附带的 agent | 角色/阶段提示词依任务依赖和 runtime 权限，以内联或范围明确的原生子 agent 运行 |
-| 可选 Codex full-runtime profile | Planner、agent-team 模板和 hook pack 位于 `skills/academic-research-suite/codex/`；默认关闭 |
+| 可选 Codex full-runtime profile | Planner、agent-team 模板和 hook pack 位于 `skills/codex/`；默认关闭 |
 | 重型命令（`ars-full`、`ars-reviewer`、`ars-revision-coach`）省略 `model:`，轻量模式保留 `model: sonnet` | 重型命令继承当前 Codex 会话模型；轻量模式的 `sonnet` 作为上游 Claude 元数据保留，不会覆盖会话模型 |
 | `ARS_MODEL_TIERING=economy\|quality-boost` | 保留 judgment/execution 分类；仅在 Codex 支持逐次 dispatch 指定模型时应用，否则保持当前模型 |
 | 受保护 agent 的 `tools:` allowlist | 保留为最小权限角色边界；被委派的 owner 不获得 Bash 或网络 transport |
@@ -342,7 +310,7 @@ ARS 最初是为 Claude Code 编写的。在本 Codex 打包版本中：
 | 修订主张漂移防护 | v3.20 非排序 roadmap 与 author-adjudication contract，配合主张强度阶梯、revision-evidence bundle、deterministic token-conservation checker 和 held-out 测量集 |
 | Panel／degradation／pipeline-boundary 可执行检查 | 连同 hermetic 测试一起内嵌，并由可选 full-runtime manifest 暴露 |
 | SessionStart 和 SubagentStop hook（含更新提醒） | 仅为可追溯性而内嵌保留；Codex 不安装或执行 Claude hook |
-| Plugin marketplace 更新 | 执行 `codex plugin marketplace upgrade ars-codex` 后重新添加 `ars-codex@ars-codex`；直接安装的 skill 仍通过重新安装或 pull 更新 |
+| 包更新 | 重新安装 skill，或 pull 本仓库更新 |
 | Claude Code Agent Team | 原生 Codex 子 agent 依工作自适应安排；另设的固定 topology 仍须选用 |
 | 上游文档中的跨模型 provider 调度 | 默认禁用；仅在明确配置 provider 并取得用户同意时可用 |
 
@@ -375,31 +343,31 @@ export ARS_CROSS_MODEL="gpt-6-astra"
 入口文件为：
 
 ```text
-skills/academic-research-suite/SKILL.md
+skills/SKILL.md
 ```
 
 Workflow 内容位于：
 
 ```text
-skills/academic-research-suite/ars/<workflow>/
+skills/ars/<workflow>/
 ```
 
 共享的 schema、合规规则和跨 workflow 契约位于：
 
 ```text
-skills/academic-research-suite/ars/shared/
+skills/ars/shared/
 ```
 
 在调试或更新此包时，请保留这些路径。许多 ARS workflow 文件交叉引用了 `shared/`、`scripts/`、`examples/` 及其他 workflow 目录。
 
 ## 更新策略
 
-更新会将选定的上游 ARS 内容同步到 `skills/academic-research-suite/ars/`。
+更新会将选定的上游 ARS 内容同步到 `skills/ars/`。
 不要盲目镜像 Claude Code repo；应排除 Claude/plugin 加载器文件，如 `.claude/`、`.claude-plugin/`、源码 `.gitignore`，以及 Codex 中不需要的纯符号链接别名目录。可保留嵌套的上游 `.github/` workflow 作为非活跃 traceability 和自测 fixture。
 
 ### 非活跃的上游脚本
 
-部分上游维护脚本已内嵌但在此 Codex 打包版本中被刻意设为非活跃状态，因为它们需要非内嵌的 Claude Code 输入（如 `.claude/CLAUDE.md`）。在将任何上游脚本接入 Codex CI 之前，请参阅 `skills/academic-research-suite/manifest.json` 中的 `inactive_upstream_scripts`。
+部分上游维护脚本已内嵌但在此 Codex 打包版本中被刻意设为非活跃状态，因为它们需要非内嵌的 Claude Code 输入（如 `.claude/CLAUDE.md`）。在将任何上游脚本接入 Codex CI 之前，请参阅 `skills/manifest.json` 中的 `inactive_upstream_scripts`。
 
 ## 贡献者与致谢
 
@@ -412,4 +380,4 @@ skills/academic-research-suite/ars/shared/
 **[Joker2377](https://github.com/Joker2377)** — 在 issue 讨论中帮助回答社区安装问题，并澄清了新手安装步骤。
 
 内嵌上游 ARS 的贡献者名单详见
-[`skills/academic-research-suite/ars/README.md`](skills/academic-research-suite/ars/README.md#contributors)。
+[`skills/ars/README.md`](skills/ars/README.md#contributors)。

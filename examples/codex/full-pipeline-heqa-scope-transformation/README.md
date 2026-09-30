@@ -89,7 +89,7 @@ The strongest regression signals are at stage transitions:
 - It does not run `academic-paper full` mode (which would invoke the
   v3.6.8 generator-evaluator two-phase contract gate). The vendored
   upstream commit `1d0c8625` is pre-v3.6.8 — see
-  `../../../skills/academic-research-suite/manifest.json` for the
+  `../../../skills/manifest.json` for the
   pinned upstream commit.
 - The transcripts are **excerpted** from the `codex exec` runs, not
   byte-equivalent reproductions. LLM outputs are not byte-reproducible

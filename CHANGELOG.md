@@ -405,7 +405,7 @@ All notable changes to the Codex package are documented here.
 
 ### Fixed
 - Replaced the Codex Desktop plugin's `skills` symlink with a materialized
-  bundled `skills/academic-research-suite` directory so Windows plugin caches
+  bundled `skills` directory so Windows plugin caches
   register the bundled skill reliably.
 - Added a package quality gate that fails if the Desktop plugin bundle reverts
   to symlink-based skill packaging.
@@ -486,7 +486,7 @@ All notable changes to the Codex package are documented here.
 
 ### Added
 - Added an optional Codex full-runtime adapter profile under
-  `skills/academic-research-suite/codex/`, including deterministic route
+  `skills/codex/`, including deterministic route
   planning, Codex agent-team templates, a disabled-by-default hook pack, and
   adapter quality gates. Default ARS Codex behavior remains inline role-prompt
   execution.

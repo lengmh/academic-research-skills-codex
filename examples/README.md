@@ -8,6 +8,6 @@ regression-evidence requirement.
 |---|---|
 | [`codex/full-pipeline-heqa-scope-transformation/`](codex/full-pipeline-heqa-scope-transformation/) | One Codex-platform `academic-pipeline` **smoke traversal** on Codex CLI 0.130.0 — 6 stages (1, 2, 2.5, 3, 4, 4.5+6) routed via `codex exec` on 2026-05-11; Stage 5 artifact imported from a prior `ars-codex` session on 2026-05-10. Both MANDATORY integrity gates engaged. See the directory README for the full honest-scope statement. |
 
-> Note: separate from the vendored `skills/academic-research-suite/ars/*/examples/`
+> Note: separate from the vendored `skills/ars/*/examples/`
 > directories, which are upstream Claude Code examples copied as part of
 > the workflow content and are not Codex-platform evidence.
