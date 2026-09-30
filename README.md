@@ -14,7 +14,7 @@ and runtime adapter. Its release number follows the vendored ARS suite.
 This repository vendors the ARS workflow content as a single Codex skill:
 
 ```text
-skills/academic-research-suite/
+skills/
   SKILL.md
   manifest.json
   agents/openai.yaml
@@ -38,7 +38,7 @@ skills/academic-research-suite/
 
 The original Claude Code ARS checkout is not modified. Upstream content is copied
 from verified upstream release commits and adapted through the Codex router in
-`skills/academic-research-suite/SKILL.md`.
+`skills/SKILL.md`.
 
 ## Relationship to Claude Code ARS
 
@@ -52,8 +52,8 @@ Use this repo when you want the Codex-native single-suite skill.
 ## Versioning
 
 This ARS-Codex package is version `3.22.2`. The repo-root `VERSION` file,
-`skills/academic-research-suite/SKILL.md` metadata version, and
-`skills/academic-research-suite/manifest.json` `adapter_version` track the
+`skills/SKILL.md` metadata version, and
+`skills/manifest.json` `adapter_version` track the
 Codex package version in step with the vendored ARS suite, starting at `3.22.0`.
 Earlier `0.1.x` release numbers remain historical. The exact upstream version,
 tag, and commit are recorded in `manifest.source_repositories[]`.
@@ -89,54 +89,19 @@ transport.
 Native adaptive execution is the default: use bounded subagents for independent
 work when useful and let the lead continue with other work. The fixed
 full-runtime topology and hooks remain opt-in. Read the
-[model runtime policy](skills/academic-research-suite/codex/model-runtime-policy.md)
-and [system-card alignment audit](skills/academic-research-suite/codex/audits/2026-09-06-model-alignment.md).
+[model runtime policy](skills/codex/model-runtime-policy.md)
+and [system-card alignment audit](skills/codex/audits/2026-09-06-model-alignment.md).
 
-## Install ARS-Codex Plugin
+## Install Or Update Skill
 
-Add the GitHub marketplace and install ARS-Codex with Codex CLI:
-
-```bash
-codex plugin marketplace add Imbad0202/academic-research-skills-codex --ref main
-codex plugin add ars-codex@ars-codex
-```
-
-To update a plugin install later:
-
-```bash
-codex plugin marketplace upgrade ars-codex
-codex plugin add ars-codex@ars-codex
-```
-
-In Codex Desktop, you can alternatively add the repository from **Plugins** and
-then install **ARS-Codex**:
-
-```text
-Marketplace source: https://github.com/Imbad0202/academic-research-skills-codex.git
-Branch/ref: main
-Plugin: ars-codex
-```
-
-The plugin root is `plugins/ars-codex/`. Its `skills/` directory contains a
-materialized copy of `academic-research-suite`, not a symlink. This keeps
-Codex Desktop installs portable on Windows, where plugin caches may materialize
-symlinks as plain text files and skip bundled skill registration.
-
-Open a new Codex conversation after installation, then invoke
-`$academic-research-suite` or describe an academic research task that matches
-the bundled workflow.
-
-## Direct Skill Install Or Update
-
-As an alternative to the plugin, install the skill directly from this repo
-path. Use `--method git` so public and
+Install the skill directly from this repo path. Use `--method git` so public and
 credentialed GitHub access both work consistently:
 
 ```bash
 python3 "$HOME/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py" \
   --repo Imbad0202/academic-research-skills-codex \
   --ref main \
-  --path skills/academic-research-suite \
+  --path skills \
   --method git
 ```
 
@@ -151,7 +116,7 @@ rm -rf "$HOME/.codex/skills/academic-research-suite"
 python3 "$HOME/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py" \
   --repo Imbad0202/academic-research-skills-codex \
   --ref main \
-  --path skills/academic-research-suite \
+  --path skills \
   --method git
 ```
 
@@ -167,10 +132,10 @@ Codex conversation.
 
 ## Codex Docs
 
-- [Codex setup](skills/academic-research-suite/ars/docs/SETUP.md) covers
+- [Codex setup](skills/ars/docs/SETUP.md) covers
   installation, `ars-*` aliases, optional tools, Material Passport adapters,
   and unsupported Claude plugin features.
-- [Codex architecture](skills/academic-research-suite/ars/docs/ARCHITECTURE.md)
+- [Codex architecture](skills/ars/docs/ARCHITECTURE.md)
   explains the logical ARS pipeline with the Codex runtime overlay.
 - [Optional full-runtime adapter](CODEX_FULL_RUNTIME_ADAPTER.md) documents the
   disabled-by-default planner, Codex agent-team templates, and hook pack.
@@ -315,7 +280,7 @@ codex exec --ephemeral --sandbox read-only \
 Maintainer quality gates:
 
 ```bash
-python3 skills/academic-research-suite/codex/scripts/ars_codex_quality_gates.py all --json
+python3 skills/codex/scripts/ars_codex_quality_gates.py all --json
 ```
 
 Expected: every reported gate has `"ok": true`.
@@ -384,10 +349,8 @@ ARS was originally written for Claude Code. In this Codex package:
   claim-strength ladder and deterministic numeric, citation, marker, and
   protected-term conservation checks as advisory-first guards.
 - The upstream v3.18 SessionStart update checker is vendored but not installed
-  or executed as a Codex hook. Plugin users update with
-  `codex plugin marketplace upgrade ars-codex` followed by
-  `codex plugin add ars-codex@ars-codex`; direct skill installs still update by
-  reinstalling or pulling this repository.
+  or executed as a Codex hook. Update this package by reinstalling the skill or
+  pulling this repository.
 - Upstream references to a "fresh Claude Code session" mean a new Codex
   conversation in this package; Material Passport reset semantics still apply.
 - If a citation, source, statistic, or journal policy cannot be verified, Codex
@@ -412,11 +375,11 @@ boundary:
 
 | Upstream ARS feature | Codex package behavior |
 |---|---|
-| One installable plugin | Native Codex plugin `ars-codex`, bundling the single `academic-research-suite` skill |
+| One installable plugin | Distributed as one root Codex skill (`academic-research-suite`) from `skills/` |
 | `/ars-*` slash commands | Emulated as `ars-*` aliases through the skill router; not native slash commands |
 | Four upstream skills auto-discovered from `skills/` symlinks | Single Codex router skill selects the workflow and reads the vendored workflow `WORKFLOW.md` files |
 | Plugin-shipped agents | Role/phase prompts run inline or as bounded native subagents according to task dependencies and runtime permissions |
-| Optional Codex full-runtime profile | Planner, agent-team templates, and hook pack live under `skills/academic-research-suite/codex/`; disabled by default |
+| Optional Codex full-runtime profile | Planner, agent-team templates, and hook pack live under `skills/codex/`; disabled by default |
 | Heavy commands (`ars-full`, `ars-reviewer`, `ars-revision-coach`) omit `model:`; light modes retain `model: sonnet` | Heavy commands inherit the current Codex session model; light-mode `sonnet` remains upstream Claude metadata and does not override the session model |
 | `ARS_MODEL_TIERING=economy\|quality-boost` | Classification is preserved; routing remains advisory unless Codex exposes per-dispatch model selection |
 | Protected agent `tools:` allowlists | Preserved as least-privilege role boundaries; dispatched owners do not receive Bash/network transport |
@@ -446,7 +409,7 @@ boundary:
 | Revision claim-drift guards | The v3.20 non-ranking roadmap and author-adjudication contract complement the claim-strength ladder, revision-evidence bundle, deterministic token-conservation checker, and held-out measurement set |
 | Executable panel/degradation/pipeline-boundary checks | Vendored with their hermetic tests and exposed by the optional full-runtime manifest |
 | SessionStart and SubagentStop hooks, including the update reminder | Vendored for traceability only; Codex does not install or execute Claude hooks |
-| Plugin marketplace update | Refresh with `codex plugin marketplace upgrade ars-codex`, then re-add `ars-codex@ars-codex`; direct skill installs still reinstall or pull |
+| Package update | Reinstall the skill or pull this repository |
 | Claude Code Agent Team | Native Codex subagents are scheduled adaptively; the separate fixed topology remains opt-in |
 | Cross-model provider dispatch from upstream docs | Disabled by default; available only with explicit provider configuration and explicit user consent |
 
@@ -487,19 +450,19 @@ the latest local validation summary.
 The entry point is:
 
 ```text
-skills/academic-research-suite/SKILL.md
+skills/SKILL.md
 ```
 
 Workflow content is under:
 
 ```text
-skills/academic-research-suite/ars/<workflow>/
+skills/ars/<workflow>/
 ```
 
 Shared schemas, compliance rules, and cross-workflow contracts are under:
 
 ```text
-skills/academic-research-suite/ars/shared/
+skills/ars/shared/
 ```
 
 When debugging or updating the package, preserve these paths. Many ARS workflow
@@ -508,7 +471,7 @@ directories.
 
 ## Update Policy
 
-Updates sync selected upstream ARS content into `skills/academic-research-suite/ars/`.
+Updates sync selected upstream ARS content into `skills/ars/`.
 Do not mirror the Claude Code repo blindly; exclude Claude/plugin loader files
 such as `.claude/`, `.claude-plugin/`, source `.gitignore`, and symlink-only
 alias directories that are not needed in Codex. Nested upstream `.github/`
@@ -519,7 +482,7 @@ workflows may be retained as inactive traceability and self-test fixtures.
 Some upstream maintenance scripts are vendored but intentionally inactive in
 this Codex package because they require non-vendored Claude Code inputs such as
 `.claude/CLAUDE.md`. See `inactive_upstream_scripts` in
-`skills/academic-research-suite/manifest.json` before wiring any upstream script
+`skills/manifest.json` before wiring any upstream script
 into Codex CI.
 
 ## Contributors And Acknowledgements
@@ -538,4 +501,4 @@ for macOS and other environments.
 installation questions and clarify beginner setup steps in issue discussions.
 
 Vendored upstream ARS contributors are acknowledged in
-[`skills/academic-research-suite/ars/README.md`](skills/academic-research-suite/ars/README.md#contributors).
+[`skills/ars/README.md`](skills/ars/README.md#contributors).

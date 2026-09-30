@@ -2,12 +2,12 @@
 
 This guide documents the optional full-runtime profile for
 `academic-research-suite`. Default ARS-Codex execution adapts between inline work and native delegation
-through `skills/academic-research-suite/SKILL.md`. This guide covers the separately
+through `skills/SKILL.md`. This guide covers the separately
 opt-in fixed topology and hooks.
 
 ## What This Adds
 
-The Codex-only adapter lives under `skills/academic-research-suite/codex/` and
+The Codex-only adapter lives under `skills/codex/` and
 adds four pieces:
 
 1. `full-runtime-manifest.json` defines alias routing, workflow mapping,
@@ -21,7 +21,7 @@ adds four pieces:
    manually installed and explicitly enabled before use.
 
 The vendored upstream ARS content remains under
-`skills/academic-research-suite/ars/`. The current package manifest pins the
+`skills/ars/`. The current package manifest pins the
 exact upstream commit.
 
 ## Enablement
@@ -54,7 +54,7 @@ export ARS_CODEX_AGENT_TEAM=1
 ```
 
 Hooks still require explicit manual installation or a Codex hook configuration
-that references `skills/academic-research-suite/codex/hooks/hooks.json`.
+that references `skills/codex/hooks/hooks.json`.
 
 ## Usage
 
@@ -68,7 +68,7 @@ Planner inspection:
 
 ```bash
 ARS_CODEX_FULL_RUNTIME=1 ARS_CODEX_AGENT_TEAM=1 \
-python3 skills/academic-research-suite/codex/scripts/ars_codex_full_runtime.py --pretty \
+python3 skills/codex/scripts/ars_codex_full_runtime.py --pretty \
   "ars-reviewer full review for this manuscript."
 ```
 
@@ -170,11 +170,11 @@ material rather than Codex performance evidence.
 
 ## Astra model plan
 
-The [model policy](skills/academic-research-suite/codex/model-runtime-policy.md)
+The [model policy](skills/codex/model-runtime-policy.md)
 explains the task-based effort choices. Inspect a plan without executing a model:
 
 ```bash
-python3 skills/academic-research-suite/codex/scripts/ars_codex_full_runtime.py --pretty \
+python3 skills/codex/scripts/ars_codex_full_runtime.py --pretty \
   "ars-reviewer full review for this manuscript."
 ```
 
@@ -193,19 +193,19 @@ they neither configure the runtime nor attest that the requested model ran.
 Run adapter gates from the repository root:
 
 ```bash
-python3 skills/academic-research-suite/codex/scripts/ars_codex_quality_gates.py all
+python3 skills/codex/scripts/ars_codex_quality_gates.py all
 ```
 
 Run adapter tests:
 
 ```bash
-python3 -m pytest skills/academic-research-suite/codex/tests -q
+python3 -m pytest skills/codex/tests -q
 python3 -m pytest \
-  skills/academic-research-suite/ars/scripts/test_research_workflow_profile.py \
-  skills/academic-research-suite/ars/scripts/test_inquiry_branch_ledger.py \
-  skills/academic-research-suite/ars/scripts/test_check_data_access_level.py \
-  skills/academic-research-suite/ars/scripts/test_review_criteria_binding.py \
-  skills/academic-research-suite/ars/scripts/test_check_promotion_bakeoff_preregistration.py
+  skills/ars/scripts/test_research_workflow_profile.py \
+  skills/ars/scripts/test_inquiry_branch_ledger.py \
+  skills/ars/scripts/test_check_data_access_level.py \
+  skills/ars/scripts/test_review_criteria_binding.py \
+  skills/ars/scripts/test_check_promotion_bakeoff_preregistration.py
 ```
 
 ## Known Degradations
@@ -214,7 +214,7 @@ python3 -m pytest \
   the root skill and optional planner.
 - Native delegation is adaptive and runtime-dependent. Fixed planner topologies
   and hooks remain opt-in; their flags do not gate ordinary collaboration.
-- ARS-Codex uses the native Codex plugin marketplace lifecycle; Claude-only
+- ARS-Codex installs from the repository `skills/` root skill; Claude-only
   slash-command registration and hook behavior are not reproduced.
 - Hook installation is manual and disabled by default.
 - New trusted project sessions use `gpt-6-astra` / `xhigh` from the project

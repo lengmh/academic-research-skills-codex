@@ -12,7 +12,7 @@ ARS-Codex 是
 本倉庫將 ARS workflow 內容作為單一 Codex skill 提供：
 
 ```text
-skills/academic-research-suite/
+skills/
   SKILL.md
   manifest.json
   agents/openai.yaml
@@ -30,7 +30,7 @@ skills/academic-research-suite/
 ```
 
 原始 Claude Code ARS 的 checkout 不會被修改。上游內容從已核對的上游發行 commit 複製，
-並透過 `skills/academic-research-suite/SKILL.md` 中的 Codex router 進行適配。
+並透過 `skills/SKILL.md` 中的 Codex router 進行適配。
 
 ## 與 Claude Code ARS 的關係
 
@@ -44,8 +44,8 @@ skills/academic-research-suite/
 ## 版本控制
 
 此 ARS-Codex 套件版本為 `3.22.2`。倉庫根目錄的 `VERSION` 檔案、
-`skills/academic-research-suite/SKILL.md` 的 metadata 版本，
-以及 `skills/academic-research-suite/manifest.json` 的 `adapter_version`
+`skills/SKILL.md` 的 metadata 版本，
+以及 `skills/manifest.json` 的 `adapter_version`
 自 `3.22.0` 起與內嵌 ARS 套件使用相同版號；舊有 `0.1.x` 紀錄保留原版號。
 上游版本、tag 與完整 commit 記錄在 `manifest.source_repositories[]` 中。
 
@@ -69,44 +69,12 @@ Codex session 選用 `gpt-6-astra` 與 `xhigh` reasoning。安裝 skill 不會�
 
 預設採原生自適應執行：適合平行處理的獨立工作可交給範圍明確的子 agent，
 主 agent 同時繼續其他工作。固定 full-runtime topology 與 hooks 仍須選用。
-詳見[模型執行策略](skills/academic-research-suite/codex/model-runtime-policy.md)
-與[系統卡對齊稽核](skills/academic-research-suite/codex/audits/2026-09-06-model-alignment.md)。
+詳見[模型執行策略](skills/codex/model-runtime-policy.md)
+與[系統卡對齊稽核](skills/codex/audits/2026-09-06-model-alignment.md)。
 
-## 安裝 ARS-Codex Plugin
+## 安裝或更新 Skill
 
-透過 Codex CLI 加入 GitHub marketplace 並安裝 ARS-Codex：
-
-```bash
-codex plugin marketplace add Imbad0202/academic-research-skills-codex --ref main
-codex plugin add ars-codex@ars-codex
-```
-
-日後更新 plugin：
-
-```bash
-codex plugin marketplace upgrade ars-codex
-codex plugin add ars-codex@ars-codex
-```
-
-在 Codex Desktop 中，也可以從 **Plugins** 加入此 repo，然後安裝
-**ARS-Codex**：
-
-```text
-Marketplace source: https://github.com/Imbad0202/academic-research-skills-codex.git
-Branch/ref: main
-Plugin: ars-codex
-```
-
-Plugin 根目錄為 `plugins/ars-codex/`。其中的 `skills/` 是
-`academic-research-suite` 的實體副本而非符號連結，確保 Windows 上的 Codex
-Desktop plugin 快取也能正確註冊 bundled skill。
-
-安裝後請開啟新的 Codex 對話，再呼叫 `$academic-research-suite`，或直接描述符合
-內建 workflow 的學術研究任務。
-
-## 直接安裝或更新 Skill
-
-除了 plugin 以外，也可以從本 repo 路徑直接安裝 skill。使用 `--method git`
+請從本 repo 路徑直接安裝 skill。使用 `--method git`
 以確保公開和需要認證的
 GitHub 存取都能一致運作：
 
@@ -114,7 +82,7 @@ GitHub 存取都能一致運作：
 python "$HOME/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py" \
   --repo Imbad0202/academic-research-skills-codex \
   --ref main \
-  --path skills/academic-research-suite \
+  --path skills \
   --method git
 ```
 
@@ -125,7 +93,7 @@ rm -rf "$HOME/.codex/skills/academic-research-suite"
 python "$HOME/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py" \
   --repo Imbad0202/academic-research-skills-codex \
   --ref main \
-  --path skills/academic-research-suite \
+  --path skills \
   --method git
 ```
 
@@ -139,9 +107,9 @@ python "$HOME/.codex/skills/.system/skill-installer/scripts/install-skill-from-g
 
 ## Codex 文件
 
-- [Codex 設定](skills/academic-research-suite/ars/docs/SETUP.md)涵蓋安裝、
+- [Codex 設定](skills/ars/docs/SETUP.md)涵蓋安裝、
   `ars-*` 別名、選用工具、Material Passport 適配器，以及不支援的 Claude plugin 功能。
-- [Codex 架構](skills/academic-research-suite/ars/docs/ARCHITECTURE.md)
+- [Codex 架構](skills/ars/docs/ARCHITECTURE.md)
   說明 ARS 邏輯 pipeline 與 Codex 執行時期疊層。
 
 ## 使用方式
@@ -343,7 +311,7 @@ Codex adapter 對書目網路行為採以下明確邊界：
 | 修訂主張漂移防護 | v3.20 非排序 roadmap 與 author-adjudication contract，搭配主張強度階梯、revision-evidence bundle、deterministic token-conservation checker 及 held-out 測量集 |
 | Panel／degradation／pipeline-boundary 可執行檢查 | 與 hermetic 測試一併內嵌，並由選用的 full-runtime manifest 公開 |
 | SessionStart 和 SubagentStop hooks（含更新提醒） | 僅為可追溯性而保留；Codex 不安裝或執行 Claude hooks |
-| Plugin marketplace 更新 | 執行 `codex plugin marketplace upgrade ars-codex` 後重新加入 `ars-codex@ars-codex`；直接安裝的 skill 仍以重新安裝或 pull 更新 |
+| 套件更新 | 重新安裝 skill，或 pull 本倉庫更新 |
 | Claude Code Agent Team | 原生 Codex 子 agent 依工作自適應安排；另設的固定 topology 仍須選用 |
 | 上游文件中的跨模型 provider 分派 | 預設停用；只有在明確設定 provider 並取得使用者同意時才可使用 |
 
@@ -380,19 +348,19 @@ export ARS_CROSS_MODEL="gpt-6-astra"
 入口點為：
 
 ```text
-skills/academic-research-suite/SKILL.md
+skills/SKILL.md
 ```
 
 Workflow 內容位於：
 
 ```text
-skills/academic-research-suite/ars/<workflow>/
+skills/ars/<workflow>/
 ```
 
 共享的 schema、合規規則與跨 workflow 契約位於：
 
 ```text
-skills/academic-research-suite/ars/shared/
+skills/ars/shared/
 ```
 
 在除錯或更新套件時，請保留這些路徑。許多 ARS workflow 檔案會交叉引用
@@ -400,7 +368,7 @@ skills/academic-research-suite/ars/shared/
 
 ## 更新政策
 
-更新會將精選的上游 ARS 內容同步至 `skills/academic-research-suite/ars/`。
+更新會將精選的上游 ARS 內容同步至 `skills/ars/`。
 請勿盲目鏡像 Claude Code repo；應排除 Claude/plugin 載入器檔案，
 例如 `.claude/`、`.claude-plugin/`、原始 `.gitignore`，以及 Codex
 中不需要的僅符號連結別名目錄。可保留巢狀的上游 `.github/` workflow
@@ -411,7 +379,7 @@ skills/academic-research-suite/ars/shared/
 部分上游維護腳本已內嵌但在本 Codex 套件中刻意保持非活躍狀態，
 因為它們需要非內嵌的 Claude Code 輸入，例如 `.claude/CLAUDE.md`。
 在將任何上游腳本接入 Codex CI 之前，請參閱
-`skills/academic-research-suite/manifest.json` 中的 `inactive_upstream_scripts`。
+`skills/manifest.json` 中的 `inactive_upstream_scripts`。
 
 ## 貢獻者與致謝
 
@@ -421,4 +389,4 @@ skills/academic-research-suite/ars/shared/
 測試修復與發布就緒審查。
 
 內嵌的上游 ARS 貢獻者名單見於
-[`skills/academic-research-suite/ars/README.md`](skills/academic-research-suite/ars/README.md#contributors)。
+[`skills/ars/README.md`](skills/ars/README.md#contributors)。

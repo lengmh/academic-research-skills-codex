@@ -9,7 +9,7 @@ ARS-Codex は、[Academic Research Skills（ARS）Claude Code 版](https://githu
 このリポジトリは、ARS ワークフローの内容を単一の Codex スキルとして同梱（ベンダリング）しています。
 
 ```text
-skills/academic-research-suite/
+skills/
   SKILL.md
   manifest.json
   agents/openai.yaml
@@ -26,7 +26,7 @@ skills/academic-research-suite/
     shared/
 ```
 
-元の Claude Code ARS チェックアウトは変更されません。アップストリームの内容は検証済みのリリースコミットからコピーされ、`skills/academic-research-suite/SKILL.md` の Codex ルータを通じて適合されます。
+元の Claude Code ARS チェックアウトは変更されません。アップストリームの内容は検証済みのリリースコミットからコピーされ、`skills/SKILL.md` の Codex ルータを通じて適合されます。
 
 ## Claude Code ARS との関係
 
@@ -36,7 +36,7 @@ Claude Code ネイティブのスキルレイアウト、Claude 固有の agent-
 
 ## バージョニング
 
-この ARS-Codex パッケージのバージョンは `3.22.2` です。リポジトリルートの `VERSION` ファイル、`skills/academic-research-suite/SKILL.md` のメタデータバージョン、および `skills/academic-research-suite/manifest.json` の `adapter_version` は、`3.22.0` から内包する ARS スイートと同じバージョン番号を使います。過去の `0.1.x` 番号は履歴として保持します。上流のバージョン、tag、完全な commit は `manifest.source_repositories[]` に記録します。
+この ARS-Codex パッケージのバージョンは `3.22.2` です。リポジトリルートの `VERSION` ファイル、`skills/SKILL.md` のメタデータバージョン、および `skills/manifest.json` の `adapter_version` は、`3.22.0` から内包する ARS スイートと同じバージョン番号を使います。過去の `0.1.x` 番号は履歴として保持します。上流のバージョン、tag、完全な commit は `manifest.source_repositories[]` に記録します。
 
 パッケージレベルの変更内容は [`CHANGELOG.md`](CHANGELOG.md) にまとめられています。
 
@@ -46,49 +46,17 @@ Claude Code ネイティブのスキルレイアウト、Claude 固有の agent-
 
 この checkout の [project 設定](.codex/config.toml) は、プロジェクトを信頼した新しい Codex session で `gpt-6-astra` と `xhigh` reasoning を選びます。skill のインストールではこの設定はコピーされず、実行中の session のモデルも変更できません。Planner は通常の作業に `medium`、複雑な作業に `xhigh` を提案します。これは初期方針であり、最適と実測された設定ではありません。`ultra` は Codex で明示的に選ぶ難しい作業向けで、contained citation transport は拒否します。
 
-標準はネイティブの適応的な実行です。独立した作業を必要に応じて範囲の明確な subagent に渡し、lead agent も他の作業を続けます。固定 full-runtime topology と hooks は引き続き opt-in です。[モデル実行方針](skills/academic-research-suite/codex/model-runtime-policy.md)と[システムカード対応監査](skills/academic-research-suite/codex/audits/2026-09-06-model-alignment.md)を参照してください。
+標準はネイティブの適応的な実行です。独立した作業を必要に応じて範囲の明確な subagent に渡し、lead agent も他の作業を続けます。固定 full-runtime topology と hooks は引き続き opt-in です。[モデル実行方針](skills/codex/model-runtime-policy.md)と[システムカード対応監査](skills/codex/audits/2026-09-06-model-alignment.md)を参照してください。
 
-## ARS-Codex Plugin のインストール
+## Skill のインストールと更新
 
-Codex CLI で GitHub marketplace を追加し、ARS-Codex をインストールします。
-
-```bash
-codex plugin marketplace add Imbad0202/academic-research-skills-codex --ref main
-codex plugin add ars-codex@ars-codex
-```
-
-後で plugin を更新する場合：
-
-```bash
-codex plugin marketplace upgrade ars-codex
-codex plugin add ars-codex@ars-codex
-```
-
-Codex Desktop では、**Plugins** からこのリポジトリを追加し、
-**ARS-Codex** をインストールすることもできます。
-
-```text
-Marketplace source: https://github.com/Imbad0202/academic-research-skills-codex.git
-Branch/ref: main
-Plugin: ars-codex
-```
-
-Plugin ルートは `plugins/ars-codex/` です。`skills/` にはシンボリックリンクではなく
-`academic-research-suite` の実体コピーが含まれるため、Windows の Codex Desktop
-plugin キャッシュでも bundled skill を正しく登録できます。
-
-インストール後は新しい Codex セッションを開き、`$academic-research-suite` を呼び出すか、
-同梱 workflow に該当する学術研究タスクを直接記述してください。
-
-## Skill の直接インストールと更新
-
-Plugin を使わず、このリポジトリパスからスキルを直接インストールすることもできます。公開および認証付き GitHub アクセスの両方で一貫して動作するよう、`--method git` を使用します。
+このリポジトリパスからスキルを直接インストールします。公開および認証付き GitHub アクセスの両方で一貫して動作するよう、`--method git` を使用します。
 
 ```bash
 python "$HOME/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py" \
   --repo Imbad0202/academic-research-skills-codex \
   --ref main \
-  --path skills/academic-research-suite \
+  --path skills \
   --method git
 ```
 
@@ -99,7 +67,7 @@ rm -rf "$HOME/.codex/skills/academic-research-suite"
 python "$HOME/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py" \
   --repo Imbad0202/academic-research-skills-codex \
   --ref main \
-  --path skills/academic-research-suite \
+  --path skills \
   --method git
 ```
 
@@ -109,8 +77,8 @@ python "$HOME/.codex/skills/.system/skill-installer/scripts/install-skill-from-g
 
 ## Codex ドキュメント
 
-- [Codex セットアップ](skills/academic-research-suite/ars/docs/SETUP.md) - インストール、`ars-*` エイリアス、オプションツール、Material Passport アダプター、および未対応の Claude プラグイン機能について説明しています。
-- [Codex アーキテクチャ](skills/academic-research-suite/ars/docs/ARCHITECTURE.md) - Codex ランタイムオーバーレイを含む ARS パイプラインの論理構成を説明しています。
+- [Codex セットアップ](skills/ars/docs/SETUP.md) - インストール、`ars-*` エイリアス、オプションツール、Material Passport アダプター、および未対応の Claude プラグイン機能について説明しています。
+- [Codex アーキテクチャ](skills/ars/docs/ARCHITECTURE.md) - Codex ランタイムオーバーレイを含む ARS パイプラインの論理構成を説明しています。
 
 ## 使い方
 
@@ -285,7 +253,7 @@ ARS は元々 Claude Code 向けに作成されました。この Codex パッ�
 | 改訂 claim-drift ガード | v3.20 の非ランキング roadmap と author-adjudication contract を、claim-strength ladder、revision-evidence bundle、deterministic token-conservation checker、held-out 測定セットと組み合わせます |
 | Panel／degradation／pipeline-boundary の実行可能チェック | hermetic テストとともにベンダリングされ、オプションの full-runtime manifest から公開されます |
 | SessionStart および SubagentStop hooks（更新通知を含む） | トレーサビリティのためのみベンダリングされています。Codex は Claude hooks をインストールまたは実行しません |
-| Plugin marketplace の更新 | `codex plugin marketplace upgrade ars-codex` の後に `ars-codex@ars-codex` を再追加します。Skill の直接インストールは引き続き再インストールまたは pull で更新します |
+| パッケージ更新 | Skill を再インストールするか、このリポジトリを pull して更新します |
 | Claude Code Agent Team | ネイティブ Codex subagent は作業に応じて適応的に使います。別の固定 topology は opt-in です |
 | アップストリームドキュメントのクロスモデル provider ディスパッチ | デフォルトでは無効。provider 設定とユーザー同意が明示された場合のみ使用できます |
 
@@ -316,30 +284,30 @@ ARS-Codex があなたの研究ワークフローに役立った場合、[Buy Me
 エントリポイントは以下の通りです:
 
 ```text
-skills/academic-research-suite/SKILL.md
+skills/SKILL.md
 ```
 
 ワークフローの内容は以下に配置されています:
 
 ```text
-skills/academic-research-suite/ars/<workflow>/
+skills/ars/<workflow>/
 ```
 
 共有スキーマ、コンプライアンスルール、およびクロスワークフローのコントラクトは以下に配置されています:
 
 ```text
-skills/academic-research-suite/ars/shared/
+skills/ars/shared/
 ```
 
 パッケージのデバッグや更新を行う際は、これらのパスを維持してください。多くの ARS ワークフローファイルが `shared/`、`scripts/`、`examples/`、および他のワークフローディレクトリを相互参照しています。
 
 ## 更新ポリシー
 
-更新は、選択されたアップストリーム ARS コンテンツを `skills/academic-research-suite/ars/` に同期します。Claude Code リポジトリを無差別にミラーしないでください。`.claude/`、`.claude-plugin/`、ソースの `.gitignore`、および Codex で不要なシンボリックリンクのみのエイリアスディレクトリなど、Claude/プラグインローダーファイルは除外してください。ネストされたアップストリーム `.github/` workflow は、非アクティブな traceability と self-test fixture として保持できます。
+更新は、選択されたアップストリーム ARS コンテンツを `skills/ars/` に同期します。Claude Code リポジトリを無差別にミラーしないでください。`.claude/`、`.claude-plugin/`、ソースの `.gitignore`、および Codex で不要なシンボリックリンクのみのエイリアスディレクトリなど、Claude/プラグインローダーファイルは除外してください。ネストされたアップストリーム `.github/` workflow は、非アクティブな traceability と self-test fixture として保持できます。
 
 ### 非アクティブなアップストリームスクリプト
 
-一部のアップストリームメンテナンススクリプトはベンダリングされていますが、`.claude/CLAUDE.md` のようなベンダリングされていない Claude Code 入力を必要とするため、この Codex パッケージでは意図的に非アクティブになっています。アップストリームスクリプトを Codex CI に組み込む前に、`skills/academic-research-suite/manifest.json` の `inactive_upstream_scripts` を確認してください。
+一部のアップストリームメンテナンススクリプトはベンダリングされていますが、`.claude/CLAUDE.md` のようなベンダリングされていない Claude Code 入力を必要とするため、この Codex パッケージでは意図的に非アクティブになっています。アップストリームスクリプトを Codex CI に組み込む前に、`skills/manifest.json` の `inactive_upstream_scripts` を確認してください。
 
 ## 貢献者と謝辞
 
@@ -347,4 +315,4 @@ skills/academic-research-suite/ars/shared/
 
 **Codex** - メンテナーの指示のもと、Codex アダプターのパッケージング、ルータポリシーの強化、テスト修正、およびリリース準備レビューを支援。
 
-ベンダリングされたアップストリーム ARS の貢献者は、[`skills/academic-research-suite/ars/README.md`](skills/academic-research-suite/ars/README.md#contributors) に記載されています。
+ベンダリングされたアップストリーム ARS の貢献者は、[`skills/ars/README.md`](skills/ars/README.md#contributors) に記載されています。

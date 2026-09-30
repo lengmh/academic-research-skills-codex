@@ -2,7 +2,7 @@
 
 Date: 2026-05-10
 
-Scope: `skills/academic-research-suite` in `academic-research-skills-codex`.
+Scope: `skills` in `academic-research-skills-codex`.
 The upstream `academic-research-skills` checkout was not modified.
 
 ## Summary
@@ -46,11 +46,11 @@ None found in this pass. The prior 67 failures were resolved by Codex working-tr
 - `scripts/test_check_v3_6_7_pattern_protection.py -q`: `58 passed`.
 - `scripts/test_check_v3_6_8_pattern_protection.py -q`: `45 passed`.
 - `python -m pytest --tb=short -q`: `901 passed`.
-- `python -m json.tool skills/academic-research-suite/manifest.json`: passed.
-- `python -m json.tool skills/academic-research-suite/ars/scripts/codex_v3_6_7_block_baseline.json`: passed.
-- `python -m json.tool skills/academic-research-suite/ars/hooks/hooks.json`: passed.
-- `find skills/academic-research-suite/ars -type l`: no symlinks found.
-- `find skills/academic-research-suite/ars -type f -size +5M`: no files over 5 MB found.
+- `python -m json.tool skills/manifest.json`: passed.
+- `python -m json.tool skills/ars/scripts/codex_v3_6_7_block_baseline.json`: passed.
+- `python -m json.tool skills/ars/hooks/hooks.json`: passed.
+- `find skills/ars -type l`: no symlinks found.
+- `find skills/ars -type f -size +5M`: no files over 5 MB found.
 
 ## Recommendation
 
